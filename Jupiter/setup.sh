@@ -9,13 +9,13 @@ bash Anaconda3-2020.02-Linux-x86_64.sh
 
 # Check that the PATH variable contains the Anaconda environment
 SUB='anaconda3/bin'
-if [[ "$PATH" != *"$SUB"]]; then
+if [[ "$PATH" != *"$SUB"* ]]; then
   export PATH=/home/ubuntu/anaconda3/bin:$PATH
 fi
 
 # Check that Anaconda is the preferred environment
 PENV='which python'
-if [[ "$PENV" != *"$SUB"*]]; then
+if [[ "$PENV" != *"$SUB"* ]]; then
   echo "Anaconda is NOT the current Python environment"
 fi
 
@@ -27,7 +27,7 @@ jupyter notebook --generate-config
 PSWD2=''
 echo "Enter a password to protect Jupiter notebooks"
 read PSWD1
-while [[ "$PSWD1" != "$PSWD2"]]
+while [[ "$PSWD1" != "$PSWD2" ]]
 do
   echo "Please verify your password"
   read PSWD2
