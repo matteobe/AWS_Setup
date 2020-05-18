@@ -1,0 +1,13 @@
+c = get_config()
+
+# Kernel config
+# Include plotting support in your notebook
+c.IPKernelApp.pylab = 'inline'
+
+# Notebook config
+c.NotebookApp.certfile = u'/home/ubuntu/certs/mycertifications.pem'
+c.NotebookApp.ip = '0.0.0.0'
+c.NotebookApp.open_browser = False
+c.NotebookApp.password = u'sha1'
+# Set the port to 8888, the port we set up in the AWS EC2 set-up
+c.NotebookApp.port = 8888
