@@ -14,7 +14,7 @@ if [[ "$PATH" != *"$SUB"* ]]; then
 fi
 
 # Check that Anaconda is the preferred environment
-PENV='which python'
+PENV=$(which python)
 if [[ "$PENV" != *"$SUB"* ]]; then
   echo "Anaconda is NOT the current Python environment"
 fi
@@ -33,8 +33,8 @@ do
   read PSWD2
 done
 
-# Generate SHA1 key based on user password input and
-SHAK='ipython password_setup.py'
+# Generate SHA1 key based on user password input and substitute it in config file
+SHAK=$(ipython password_setup.py)
 sed -i "s/sha1/${SHAK}/g" config_text.txt
 
 # Read in text to be added to Jupiter config file
@@ -47,7 +47,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycertifications.pem
 
 # Configure Jupiter
 cd ~/.jupyter/
-sed -i "1,14s/^/${JCT}/" jupyter_notebook_config.py
+sed -i "1,14s/^/\\${JCT}/" jupyter_notebook_config.py
 
 # Set user permissions for Jupiter access
 sudo chown $USER:$USER /home/ubuntu/certs/mycertifications.pem
