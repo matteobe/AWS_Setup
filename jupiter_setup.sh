@@ -20,6 +20,7 @@ fi
 
 # Configure Jupiter Notebooks
 jupyter notebook --generate-config
+JCT=$(<jupiter_config_text.txt)
 
 # Generate certificates for HTTPS
 mkdir certs
@@ -28,6 +29,4 @@ openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out myce
 
 # Configure Jupiter
 cd ~/.jupiter/
-SUB="c = get_config()\n\
-
 sed -i '1,xs/^/c = get_config()\n/' jupyter_notebook_config.py
