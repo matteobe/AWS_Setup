@@ -29,7 +29,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out myce
 
 # Configure Jupiter
 cd ~/.jupiter/
-sed -i "1,12s/^/ ${JCT}/" jupyter_notebook_config.py
+sed -i "1,13s/^/ ${JCT}/" jupyter_notebook_config.py
 
 # Set user permissions for Jupiter access
 # sudo chown $USER:$USER /home/ubuntu/certs/mycert.pem
