@@ -37,8 +37,10 @@ done
 SHAK=$(ipython password_setup.py)
 sed -i "s/sha1/${SHAK}/g" config_text.txt
 
-# Read in text to be added to Jupiter config file
-JCT=$(<config_text.txt)
+# Read in text to be added to Jupiter config file and escape characters
+JCT=$(cat config_text.txt)
+JCT=$(printf "%q" $JCT)
+JCT=$(JCT//\//\\\/)     # Replace / with \/
 
 # Generate certificates for HTTPS
 cd ~/
@@ -49,7 +51,11 @@ openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycertifications.pem
 # Configure Jupiter
 cd ~/.jupyter/
 ##### ERROR with regex to be fixed ###############
-sed -i "1,14s/^/$JCT/" jupyter_notebook_config.pyc
+sed -i "1s/^/${JCT}/" jupyter_notebook_config.pyc
 
 # Set user permissions for Jupiter access
 sudo chown $USER:$USER /home/ubuntu/certs/mycertifications.pem
+
+#################### Clean installation files #################################
+cd ~/AWS_Setup/Jupyter/
+rm -f Anaconda3-2020.02-Linux-x86_64.sh
