@@ -19,13 +19,17 @@ if [[ "$PENV" != *"$SUB"* ]]; then
   echo "Anaconda is NOT the current Python environment"
 fi
 
+#################### Install Python packages ##################################
+pip install -U -r requirements.txt
+
+
 #################### Jupiter Notebook Setup ###################################
 # Configure Jupiter Notebooks
 jupyter notebook --generate-config
 
 # Create password protection for Jupiter Notebooks
-PSWD2=''
-echo "Enter a password to protect Jupiter notebooks"
+PSWD2=""
+echo "Enter a password to protect Jupyter notebooks"
 read PSWD1
 while [[ "$PSWD1" != "$PSWD2" ]]
 do
@@ -33,14 +37,13 @@ do
   read PSWD2
 done
 
-# Generate SHA1 key based on user password input and substitute it in config file
-SHAK=$(ipython password_setup.py)
-sed -i "s/sha1/${SHAK}/g" config_text.txt
-
-# Read in text to be added to Jupiter config file and escape characters
-JCT=$(cat config_text.txt)
-JCT=$(printf "%q" $JCT)
-JCT=$(JCT//\//\\\/)     # Replace / with \/
+# Generate SHA1 key based on user password input and config text and prepare
+# variables for input in config file
+SHAK=$(ipython password_setup.py $PSWD2)
+JCT=$(<config_text.txt)
+JCT=$(printf "%q" $JCT)  # Escape characters
+JCT=${JCT//\//\\\/}      # Replace / with \/
+JCT=${JCT/sha1/$SHAK}    # Replace SHA key
 
 # Generate certificates for HTTPS
 cd ~/
@@ -51,7 +54,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycertifications.pem
 # Configure Jupiter
 cd ~/.jupyter/
 ##### ERROR with regex to be fixed ###############
-sed -i "1s/^/${JCT}/" jupyter_notebook_config.pyc
+sed -i "1s/^/$JCT/" jupyter_notebook_config.py
 
 # Set user permissions for Jupiter access
 sudo chown $USER:$USER /home/ubuntu/certs/mycertifications.pem
