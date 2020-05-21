@@ -6,6 +6,8 @@ wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 
 # Launch Anaconda installer
 bash Anaconda3-2020.02-Linux-x86_64.sh
+# Clean installation files
+rm -f Anaconda3-2020.02-Linux-x86_64.sh
 
 # Check that the PATH variable contains the Anaconda environment
 SUB='anaconda3/bin'
@@ -21,7 +23,6 @@ fi
 
 #################### Install Python packages ##################################
 pip install -U -r requirements.txt
-
 
 #################### Jupiter Notebook Setup ###################################
 # Configure Jupiter Notebooks
@@ -41,8 +42,6 @@ done
 # variables for input in config file
 SHAK=$(ipython password_setup.py $PSWD2)
 JCT=$(<config_text.txt)
-JCT=$(printf "%q" $JCT)  # Escape characters
-JCT=${JCT//\//\\\/}      # Replace / with \/
 JCT=${JCT/sha1/$SHAK}    # Replace SHA key
 
 # Generate certificates for HTTPS
@@ -51,14 +50,14 @@ mkdir certs
 cd certs
 openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycertifications.pem -out mycertifications.pem
 
-# Configure Jupiter
+# Modify Jupyter configurations file
 cd ~/.jupyter/
-##### ERROR with regex to be fixed ###############
-sed -i "1s/^/$JCT/" jupyter_notebook_config.py
+JCF=jupyter_notebook_config.py
+cp "$JCF" "$JCF.tmp"
+# Print modified SHA key in configuration file and append tmp version
+echo "$JCT" $'\n' > "$JCF"
+cat "$JCF.tmp" >> "$JCF"
+rm -f "$JCF.tmp"
 
 # Set user permissions for Jupiter access
 sudo chown $USER:$USER /home/ubuntu/certs/mycertifications.pem
-
-#################### Clean installation files #################################
-cd ~/AWS_Setup/Jupyter/
-rm -f Anaconda3-2020.02-Linux-x86_64.sh
