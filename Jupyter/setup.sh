@@ -31,18 +31,22 @@ jupyter notebook --generate-config
 # Create password protection for Jupiter Notebooks
 PSWD2=""
 echo "Enter a password to protect Jupyter notebooks"
-read PSWD1
+read -s PSWD1
 while [[ "$PSWD1" != "$PSWD2" ]]
 do
   echo "Please verify your password"
-  read PSWD2
+  read -s PSWD2
 done
 
-# Generate SHA1 key based on user password input and config text and prepare
-# variables for input in config file
-SHAK=$(ipython password_setup.py $PSWD2)
+# Generate SHA key based on user password input and delete the password
+ipython password_setup.py $PSWD2
+PSWD1=
+PSWD2=
+
+# Read SHA key and config text and prepare variables for input in config file
+SHAK=$(<sha_key.txt)
 JCT=$(<config_text.txt)
-JCT=${JCT/sha1/$SHAK}    # Replace SHA key
+JCT=${JCT/sha1/SHAK}    # Replace SHA key
 
 # Generate certificates for HTTPS
 cd ~/
