@@ -29,6 +29,7 @@ pip install -U -r requirements.txt
 jupyter notebook --generate-config
 
 # Create password protection for Jupiter Notebooks
+echo "\nJupyter Notebook password setup\n"
 jupyter notebook password
 
 # Modify Jupyter configurations file
@@ -55,3 +56,8 @@ sudo chown $USER:$USER /home/ubuntu/certs/mycertifications.pem
 cd ~
 mkdir Notebooks
 cd ~/Notebooks
+
+# AWS Jupyter Notebook setup completed
+echo "\n"
+echo "AWS Jupyter Notebook setup completed, enjoy your coding!"
+echo "\n"
