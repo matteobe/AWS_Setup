@@ -25,34 +25,19 @@ fi
 pip install -U -r requirements.txt
 
 #################### Jupiter Notebook Setup ###################################
-# Create password protection for Jupiter Notebooks
-PSWD2=""
-echo "Enter a password to protect Jupyter notebooks"
-read -s PSWD1
-while [[ "$PSWD1" != "$PSWD2" ]]
-do
-  echo "Please verify your password"
-  read -s PSWD2
-done
-
-# Generate SHA key based on user password input and delete the password
-ipython password_setup.py
-PSWD1=
-PSWD2=
-
-# Read SHA key and config text and prepare variables for input in config file
-SHAK=$(<sha_key.txt)
-JCT=$(<config_text.txt)
-JCT=${JCT/sha1/SHAK}    # Replace SHA key
-
 # Generate Jupyter Notebooks configuration file
 jupyter notebook --generate-config
 
+# Create password protection for Jupiter Notebooks
+jupyter notebook password
+
 # Modify Jupyter configurations file
+JCT=$(<config_text.txt)
 cd ~/.jupyter/
 JCF=jupyter_notebook_config.py
 cp "$JCF" "$JCF.tmp"
-# Print modified SHA key in configuration file and append tmp version
+
+# Merge files
 echo "$JCT" $'\n' > "$JCF"
 cat "$JCF.tmp" >> "$JCF"
 rm -f "$JCF.tmp"
