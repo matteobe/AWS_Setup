@@ -25,9 +25,6 @@ fi
 pip install -U -r requirements.txt
 
 #################### Jupiter Notebook Setup ###################################
-# Configure Jupiter Notebooks
-jupyter notebook --generate-config
-
 # Create password protection for Jupiter Notebooks
 PSWD2=""
 echo "Enter a password to protect Jupyter notebooks"
@@ -39,7 +36,7 @@ do
 done
 
 # Generate SHA key based on user password input and delete the password
-ipython password_setup.py $PSWD2
+ipython password_setup.py
 PSWD1=
 PSWD2=
 
@@ -48,11 +45,8 @@ SHAK=$(<sha_key.txt)
 JCT=$(<config_text.txt)
 JCT=${JCT/sha1/SHAK}    # Replace SHA key
 
-# Generate certificates for HTTPS
-cd ~/
-mkdir certs
-cd certs
-openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycertifications.pem -out mycertifications.pem
+# Generate Jupyter Notebooks configuration file
+jupyter notebook --generate-config
 
 # Modify Jupyter configurations file
 cd ~/.jupyter/
@@ -63,5 +57,16 @@ echo "$JCT" $'\n' > "$JCF"
 cat "$JCF.tmp" >> "$JCF"
 rm -f "$JCF.tmp"
 
+# Generate certificates for HTTPS
+cd ~/
+mkdir certs
+cd certs
+openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycertifications.pem -out mycertifications.pem
+
 # Set user permissions for Jupiter access
 sudo chown $USER:$USER /home/ubuntu/certs/mycertifications.pem
+
+# Create directory for Jupyter Notebooks
+cd ~
+mkdir Notebooks
+cd ~/Notebooks
