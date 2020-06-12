@@ -57,5 +57,9 @@ cd ~
 mkdir Notebooks
 cd ~/Notebooks
 
+# Initialize Git repository and add pre-commit hooks for automatically compiling
+# .ipynb files into .py files
+cp ~/AWS_Setup/Jupyter/pre-commit ~/Notebooks/.git/hooks/pre-commit
+
 # AWS Jupyter Notebook setup completed
 echo "\nAWS Jupyter Notebook setup completed, enjoy your coding!\n"

@@ -1,0 +1,14 @@
+###################### Python Packages Requirements ##########################
+
+# Virtual environments
+virtualenv==20.0.1
+
+# Image processing
+Pillow==7.0.0
+matplotlib==3.1.3
+
+# Arithmetics
+numpy==1.18.1
+
+# Computer vision
+opencv-python==4.2.0.32
